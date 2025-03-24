@@ -1,0 +1,107 @@
+# ============================
+# 🔥 Arquivos do Gradle
+# ============================
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+
+# ============================
+# 🔥 Arquivos do Maven (caso tenha)
+# ============================
+.mvn/
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# ============================
+# 🔥 Logs
+# ============================
+*.log
+logs/
+**/logs/
+*.out
+*.err
+
+# ============================
+# 🔥 Configurações do IntelliJ IDEA
+# ============================
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# ============================
+# 🔥 Configurações do Eclipse
+# ============================
+.project
+.classpath
+.settings/
+
+# ============================
+# 🔥 Configurações do VS Code
+# ============================
+.vscode/
+
+# ============================
+# 🔥 Arquivos do Sistema
+# ============================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+*.swp
+*.swo
+
+# ============================
+# 🔥 Arquivos Sensíveis
+# ============================
+.env
+*.jks
+*.p12
+*.pem
+*.crt
+*.key
+secrets/
+config/application.yml
+config/application.properties
+src/main/resources/application.yml
+src/main/resources/application.properties
+src/test/resources/application-test.yml
+src/test/resources/application-test.properties
+
+# ============================
+# 🔥 Arquivos de Teste e Cobertura
+# ============================
+test-output/
+.coverage/
+.jacoco/
+*.ec
+*.exec
+
+# ============================
+# 🔥 Dependências e Cache
+# ============================
+/node_modules/
+/.yarn/
+/.pnp/
+.pnp.js
+*.lock
+
+# ============================
+# 🔥 Docker e Kubernetes
+# ============================
+docker-compose.override.yml
+*.dockerignore
+.kube/
+
+# ============================
+# 🔥 Banco de Dados (H2, SQLite, PostgreSQL)
+# ============================
+*.db
+*.mv.db
+*.h2.db
+*.sqlite
