@@ -39,6 +39,10 @@ public class User {
     @NotBlank
     private String email;
 
+    @Column(name="phone")
+    @Size(max= 20)
+    private String phone;
+
     @Column(name = "isActive")
     private boolean isActive;
 
@@ -84,6 +88,14 @@ public class User {
 
     public void setSendMoney(boolean sendMoney) {
         isSendMoney = sendMoney;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getEmail() {
