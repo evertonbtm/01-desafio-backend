@@ -8,6 +8,7 @@ import br.com.batista.desafio01.model.entities.Transaction;
 import br.com.batista.desafio01.model.entities.User;
 import br.com.batista.desafio01.model.enums.EUserType;
 import br.com.batista.desafio01.repository.ITransactionRepository;
+import br.com.batista.desafio01.service.notification.INotificationService;
 import br.com.batista.desafio01.service.transactionauth.ITransactionAuthService;
 import br.com.batista.desafio01.service.user.IUserService;
 import jakarta.transaction.Transactional;
@@ -34,6 +35,9 @@ public class TransactionService implements ITransactionService {
 
     @Autowired
     ITransactionAuthService authorizeService;
+
+    @Autowired
+    INotificationService notificationService;
 
     @Override
     public TransactionDTO toDTO(Transaction entity){
@@ -102,6 +106,8 @@ public class TransactionService implements ITransactionService {
 
         calculatePayerBalance(transaction);
         calculatePayeeBalance(transaction);
+
+        notificationService.notify(response);
 
         return response;
     }

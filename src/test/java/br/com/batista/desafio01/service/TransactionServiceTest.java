@@ -2,8 +2,11 @@ package br.com.batista.desafio01.service;
 
 
 
+import br.com.batista.desafio01.exception.FieldDuplicatedException;
+import br.com.batista.desafio01.exception.InsuficientBalanceException;
 import br.com.batista.desafio01.model.dto.AuthorizeDTO;
 import br.com.batista.desafio01.model.dto.TransactionDTO;
+import br.com.batista.desafio01.model.dto.UserDTO;
 import br.com.batista.desafio01.model.entities.Transaction;
 import br.com.batista.desafio01.model.entities.User;
 import br.com.batista.desafio01.model.entities.UserType;
@@ -47,9 +50,36 @@ class TransactionServiceTest {
 
     @BeforeEach
     public void init(){
-
         Mockito.mockitoSession().initMocks(this);
+    }
 
+    @Test
+    public void when_create_transaction_then_fail() throws Exception {
+
+        User payer = MockUtils.mockUser();
+        User payee = MockUtils.mockUser();
+
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setValue(BigDecimal.TEN);
+        transactionDTO.setPayee(payee.getDocument());
+        transactionDTO.setPayer(payer.getDocument());
+
+        AuthorizeDTO authorizeDTO = new AuthorizeDTO();
+        AuthorizeDTO.DataDTO dataDTO = new AuthorizeDTO.DataDTO();
+        dataDTO.setAuthorization(true);
+        authorizeDTO.setStatus("success");
+        authorizeDTO.setData(dataDTO);
+
+        Transaction transaction = transactionService.toEntity(transactionDTO);
+
+        when(userService.findByDocumentOrEmail(transactionDTO.getPayer(), transactionDTO.getPayer())).thenReturn(payer);
+        when(userService.findByDocumentOrEmail(transactionDTO.getPayee(), transactionDTO.getPayee())).thenReturn(payee);
+        when(transactionService.save(Mockito.any(Transaction.class))).thenReturn(new Transaction());
+        when(authorizeService.check("something")).thenReturn(Mono.just(authorizeDTO));
+
+        Transaction found = transactionService.processDTO(transactionDTO);
+
+        assertNotEquals(found.getValue(), transaction.getValue());
     }
 
     @Test
@@ -79,8 +109,32 @@ class TransactionServiceTest {
         Transaction found = transactionService.processDTO(transactionDTO);
 
         assertEquals(found.getIdTransaction(), transaction.getIdTransaction());
-
     }
 
+    @Test
+    public void when_create_transaction_then_InsuficientBalanceException() throws Exception {
+
+        User payer = MockUtils.mockUser();
+        payer.setMoneyBalance(BigDecimal.ZERO);
+        User payee = MockUtils.mockUser();
+
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setValue(BigDecimal.TEN);
+        transactionDTO.setPayee(payee.getDocument());
+        transactionDTO.setPayer(payer.getDocument());
+
+        AuthorizeDTO authorizeDTO = new AuthorizeDTO();
+        AuthorizeDTO.DataDTO dataDTO = new AuthorizeDTO.DataDTO();
+        dataDTO.setAuthorization(true);
+        authorizeDTO.setStatus("success");
+        authorizeDTO.setData(dataDTO);
+
+        when(userService.findByDocumentOrEmail(transactionDTO.getPayer(), transactionDTO.getPayer())).thenReturn(payer);
+        when(userService.findByDocumentOrEmail(transactionDTO.getPayee(), transactionDTO.getPayee())).thenReturn(payee);
+
+        when(authorizeService.check("something")).thenReturn(Mono.just(authorizeDTO));
+
+        assertThrows(InsuficientBalanceException.class, () -> transactionService.processDTO(transactionDTO));
+    }
 
 }
